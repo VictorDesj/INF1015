@@ -9,6 +9,9 @@
 #include "verification_allocation.hpp"
 #include "ListeDeveloppeurs.hpp"
 #include "debogage_memoire.hpp"  //NOTE: Incompatible avec le "placement new", ne pas utiliser cette entête si vous utilisez ce type de "new" dans les lignes qui suivent cette inclusion.
+#include "ListeJeux.hpp"
+#include "Liste.hpp"
+#include "Jeu.hpp"
 
 using namespace std;
 using namespace iter;
@@ -45,7 +48,7 @@ string lireString(istream& fichier)
 }
 gsl::span<Jeu*> spanListeJeux(const ListeJeux& liste)
 {
-	return gsl::span(liste.elements, liste.nElements);
+	return gsl::span(liste.elements_, liste.nElements_);
 }
 gsl::span<Concepteur*> spanListeConcepteurs(const ListeConcepteurs& liste)
 {
@@ -101,17 +104,17 @@ Concepteur* lireConcepteur(istream& fichier, ListeJeux& listeJeux)
 // tableau. Il faut allouer un nouveau tableau assez grand, copier ce qu'il y
 // avait dans l'ancien, et éliminer l'ancien trop petit. N'oubliez pas, on copie
 // des pointeurs de jeux. Il n'y a donc aucune nouvelle allocation de jeu ici !
-void changerTailleListeJeux(ListeJeux& liste, size_t nouvelleCapacite)
+void changerTailleListeJeux(Liste<Jeu>& liste, size_t nouvelleCapacite)
 {
-	assert(nouvelleCapacite >= liste.nElements); // On ne demande pas de supporter les réductions de nombre d'éléments.
+	assert(nouvelleCapacite >= liste.nElements_); // On ne demande pas de supporter les réductions de nombre d'éléments.
 	Jeu** nouvelleListeJeux = new Jeu* [nouvelleCapacite];
 	// Pas nécessaire de tester si liste.elements est nullptr puisque si c'est le cas, nElements est nécessairement 0.
-	for (size_t i : iter::range(liste.nElements))
-		nouvelleListeJeux[i] = liste.elements[i];
-	delete[] liste.elements;
+	for (size_t i : iter::range(liste.nElements_))
+		nouvelleListeJeux[i] = liste.elements_[i];
+	delete[] liste.elements_;
 
-	liste.elements = nouvelleListeJeux;
-	liste.capacite = nouvelleCapacite;
+	liste.elements_ = nouvelleListeJeux;
+	liste.capacite_ = nouvelleCapacite;
 }
 
 //TODO: Fonction pour ajouter un Jeu à ListeJeux.
@@ -119,11 +122,11 @@ void changerTailleListeJeux(ListeJeux& liste, size_t nouvelleCapacite)
 // le jeu existant. De plus, en cas de saturation du tableau elements, cette
 // fonction doit doubler la taille du tableau elements de ListeJeux.
 // Utilisez la fonction pour changer la taille du tableau écrite plus haut.
-void ajouterJeu(ListeJeux& liste, Jeu* jeu)
+void ajouterJeu(Liste<Jeu>& liste, shared_ptr<Jeu> jeu)
 {
-	if(liste.nElements == liste.capacite)
-		changerTailleListeJeux(liste, max(size_t(1), liste.capacite * 2));  // En C++23, on peut utiliser 1uz au lieu du cast.
-	liste.elements[liste.nElements++] = jeu;
+	if(liste.nElements_ == liste.capacite_)
+		changerTailleListeJeux(liste, max(size_t(1), liste.capacite_ * 2));  // En C++23, on peut utiliser 1uz au lieu du cast.
+	liste.elements_[liste.nElements_++] = jeu;
 }
 
 //TODO: Fonction qui enlève un jeu de ListeJeux.
@@ -134,11 +137,11 @@ void ajouterJeu(ListeJeux& liste, Jeu* jeu)
 // de celle-ci.
 void enleverJeu(ListeJeux& liste, const Jeu* jeu)
 {
-	for (Jeu*& elem : spanListeJeux(liste)) {
+	for (shared_ptr<Jeu>& elem : spanListeJeux(liste)) {
 		if (elem == jeu) {
-			if (liste.nElements > 1)
-				elem = liste.elements[liste.nElements - 1];
-			liste.nElements--;
+			if (liste.nElements_ > 1)
+				elem = liste.elements_[liste.nElements_ - 1];
+			liste.nElements_--;
 		}
 	}
 }
@@ -190,14 +193,14 @@ void detruireConcepteur(Concepteur* concepteur)
 {
 	cout << "\033[91m" << "Destruction du concepteur " << concepteur->nom << "\033[0m"
 			  << endl;
-	delete[] concepteur->jeuxConcus.elements;
+	delete[] concepteur->jeuxConcus.elements_;
 	delete concepteur;
 }
 
 //TODO: Fonction qui détermine si un concepteur participe encore à un jeu.
 bool encorePresentDansUnJeu(const Concepteur* concepteur)
 {
-	return concepteur->jeuxConcus.nElements != 0;
+	return concepteur->jeuxConcus.nElements_ != 0;
 }
 
 //TODO: Fonction pour détruire un jeu (libération de mémoire allouée).
@@ -225,7 +228,7 @@ void detruireListeJeux(ListeJeux& liste)
 {
 	for(Jeu* j : spanListeJeux(liste))
 		detruireJeu(j);
-	delete[] liste.elements;
+	
 }
 
 void afficherConcepteur(const Concepteur& d)
@@ -276,13 +279,13 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 
 	//int* fuite = new int;  // Pour vérifier que la détection de fuites fonctionne; un message devrait dire qu'il y a une fuite à cette ligne.
 
-	ListeJeux lj = creerListeJeux("jeux.bin"); //TODO: Appeler correctement votre fonction de création de la liste de jeux.
+	Liste<Jeu> lj = creerListeJeux("jeux.bin"); //TODO: Appeler correctement votre fonction de création de la liste de jeux.
 
 	static const string ligneSeparation = "\n\033[35m════════════════════════════════════════\033[0m\n";
 	cout << ligneSeparation << endl;
 	cout << "Premier jeu de la liste :" << endl;
 	//TODO: Afficher le premier jeu de la liste (en utilisant la fonction).  Devrait être Chrono Trigger.
-	afficherJeu(*lj.elements[0]);
+	afficherJeu(*lj.elements_[0]);
 	cout << ligneSeparation << endl;
 
 	//TODO: Appel à votre fonction d'affichage de votre liste de jeux.

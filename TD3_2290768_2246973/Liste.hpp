@@ -1,9 +1,9 @@
 #pragma once
-#include<cstddef>
-#include<string>
-#include<cppitertools/range.hpp>
+#include <cstddef>
+#include <string>
+#include <cppitertools/range.hpp>
 #include <memory>
-#include<gsl/span>
+#include <gsl/span>
 
 using namespace std;
 using namespace iter;
@@ -19,20 +19,20 @@ public:
 
 	void ajouterUnElement(const shared_ptr<T> element)
 	{
-		if (nElements == capacite)
+		if (nElements_ == capacite_)
 		{
 			changerTaille(max(size_t(1), capacite_ * 2));
 		}
-		elements_[nElements_++] = move(Element);
+		elements_[nElements_++] = move(element);
 	}
-	void enleverElement(const std::shared_ptr<T>& Element) 
+	void enleverElement(const std::shared_ptr<T>& element) 
 	{
-		for (size_t i : range(nElements_)
+		for (size_t i : range(nElements_))
 		{
-			if (elements_[i] = Element)
+			if (elements_[i] == element)
 			{
-				elements_[i]=move(elements_[nElements]);
-				elements_[nElements].reset();
+				elements_[i]=move(elements_[nElements_-1]);
+				elements_[nElements_-1].reset();
 				nElements_--;
 				break;
 			}
@@ -42,17 +42,18 @@ public:
 	{
 		return elements_[position];
 	}
-
-private:
 	unique_ptr <shared_ptr <T>[]> elements_;
-	size_t nElements_=0;
-	size_t capacite_=0;
+	size_t nElements_ = 0;
+	size_t capacite_ = 0;
+private:
+	
+
 	void changerTaille(size_t nouvelleCapacite)
 	{
-		auto nouveauxElements = make_unique <shared_ptr <T>[nouvelleCapacite]>;
-		for (size_t i : range(elements_))
+		auto nouveauxElements = make_unique<shared_ptr<T>[]>(nouvelleCapacite);
+		for (size_t i : range(nElements_))
 		{
-			nouveauxElements.elements_[i] = elements_[i];
+			nouveauxElements[i] = elements_[i];
 		}
 
 		elements_ = move(nouveauxElements);
