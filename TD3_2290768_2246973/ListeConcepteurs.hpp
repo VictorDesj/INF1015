@@ -5,5 +5,5 @@
 struct ListeConcepteurs
 {
 	std::size_t nElements, capacite;
-	Concepteur** elements;
+	unique_ptr <shared_ptr <Concepteur>[]> elements_;
 };

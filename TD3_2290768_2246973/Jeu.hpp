@@ -7,5 +7,5 @@ struct Jeu
 	std::string titre;
 	int anneeSortie;
 	std::string developpeur;
-	ListeConcepteurs concepteurs;
+	Liste<Concepteur> concepteurs;
 };

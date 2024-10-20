@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <string>
-#include "ListeJeux.hpp"
+#include "Liste.hpp"
 
 class Developpeur
 {
@@ -11,13 +11,13 @@ public:
 	Developpeur(const std::string& nom = "");
 	~Developpeur();
 
-	void ajouterJeux(ListeJeux& listeJeux);
+	void ajouterJeux(Liste<Jeu>& listeJeux);
 	const std::string& getNom() const { return paireNomJeux_.first; }
 
 	void afficher() const;
 
 private:
-	unsigned compterJeuxDeveloppes(ListeJeux& listeJeux);  // L'énoncé ne dit pas si ça doit être public ou non.
+	unsigned compterJeuxDeveloppes(Liste<Jeu>& listeJeux);  // L'énoncé ne dit pas si ça doit être public ou non.
 
-	std::pair<std::string, ListeJeux> paireNomJeux_;
+	std::pair<std::string, Liste<Jeu>> paireNomJeux_;
 };

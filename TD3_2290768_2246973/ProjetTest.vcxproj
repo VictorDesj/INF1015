@@ -177,9 +177,7 @@
     <ClInclude Include="Developpeur.hpp" />
     <ClInclude Include="Jeu.hpp" />
     <ClInclude Include="Liste.hpp" />
-    <ClInclude Include="ListeConcepteurs.hpp" />
     <ClInclude Include="ListeDeveloppeurs.hpp" />
-    <ClInclude Include="ListeJeux.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

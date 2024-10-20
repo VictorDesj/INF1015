@@ -54,13 +54,7 @@
     <ClInclude Include="Jeu.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ListeConcepteurs.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ListeDeveloppeurs.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ListeJeux.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Liste.hpp">
