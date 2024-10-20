@@ -23,7 +23,7 @@ public:
 			changerTaille(max(size_t(1), capacite_ * 2));
 		}
 		elements_[nElements] = Element;
-		nElements_++;
+		nElements_+=1;
 		
 	}
 	void enleverElement(const std::shared_ptr<T>& Element) {
