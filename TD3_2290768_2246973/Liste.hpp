@@ -16,30 +16,28 @@ public:
 	//std::size_t nElements, capacite;
 	//T** elements;
 	Liste() = default;
-	void ajouterUnElement(const shared_ptr<T>* Element)
+
+	void ajouterUnElement(const shared_ptr<T> element)
 	{
 		if (nElements == capacite)
 		{
 			changerTaille(max(size_t(1), capacite_ * 2));
 		}
-		elements_[nElements] = Element;
-		nElements_+=1;
-		
+		elements_[nElements_++] = move(Element);
 	}
-	void enleverElement(const std::shared_ptr<T>& Element) {
+	void enleverElement(const std::shared_ptr<T>& Element) 
+	{
 		for (size_t i : range(nElements_)
 		{
 			if (elements_[i] = Element)
 			{
 				elements_[i]=move(elements_[nElements]);
-
-
+				elements_[nElements].reset();
 				nElements_--;
-					break;
+				break;
 			}
 		}
 	}
-
 	shared_ptr<T> operator[](size_t position)const
 	{
 		return elements_[position];
@@ -47,8 +45,8 @@ public:
 
 private:
 	unique_ptr <shared_ptr <T>[]> elements_;
-	size_t nElements = nElements=0;
-	size_t capacite = capacite=0;
+	size_t nElements_=0;
+	size_t capacite_=0;
 	void changerTaille(size_t nouvelleCapacite)
 	{
 		auto nouveauxElements = make_unique <shared_ptr <T>[nouvelleCapacite]>;
