@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <string>
 #include "Liste.hpp"
+#include "Jeu.hpp"
 
 struct Concepteur
 {
