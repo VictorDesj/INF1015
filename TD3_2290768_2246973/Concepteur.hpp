@@ -2,7 +2,7 @@
 #include <string>
 #include "Liste.hpp" // Include the header for your Liste class
 
-// Forward declaration of Jeu to avoid circular dependency
+
 struct Jeu;
 
 struct Concepteur

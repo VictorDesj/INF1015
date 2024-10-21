@@ -17,7 +17,7 @@ public:
 
 	Liste() = default;
 
-	void setnElements(size_t nElements)  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
+	void setNElements(size_t nElements)  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
 	{
 		while (nElements > capacite_) 
 		{
@@ -27,8 +27,8 @@ public:
 
 	}
 
-	void initelements(size_t n) 
-	{     // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
+	void initElements(size_t n)  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
+	{     
 		nElements_ = n;
 		elements_ = make_shared<shared_ptr<T>[]>(nElements_);
 	}
@@ -61,10 +61,10 @@ public:
 	shared_ptr<T> chercherElement(const function<bool(const shared_ptr<T>&)>& critere) const {
 		for (size_t i = 0; i < nElements_; ++i) {
 			if (critere(elements_[i])) {
-				return elements_[i]; // Return the first matching element
+				return elements_[i]; 
 			}
 		}
-		return nullptr; // No matching element found
+		return nullptr; 
 	}
 
 	void changerTaille(size_t nouvelleCapacite)
@@ -99,8 +99,8 @@ public:
 	}
 	
 
-	size_t getnElements() const { return nElements_; }  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
-	shared_ptr <shared_ptr <T>[]> getelements() const { return elements_; }  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
+	size_t getNElements() const { return nElements_; }  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
+	shared_ptr <shared_ptr <T>[]> getElements() const { return elements_; }  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
 		
 private:
 	shared_ptr <shared_ptr <T>[]> elements_;

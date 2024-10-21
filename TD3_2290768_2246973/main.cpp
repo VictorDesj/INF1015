@@ -102,7 +102,7 @@ shared_ptr<Jeu> lireJeu(istream& fichier, Liste<Jeu>& listeJeux)
 	jeu.titre = lireString(fichier);
 	jeu.anneeSortie = int(lireUintTailleVariable(fichier));
 	jeu.developpeur = lireString(fichier);
-	jeu.concepteurs.setnElements(lireUintTailleVariable(fichier));
+	jeu.concepteurs.setNElements(lireUintTailleVariable(fichier));
 	// Rendu ici, les champs précédents de la structure jeu sont remplis avec la
 	// bonne information.
 
@@ -112,7 +112,7 @@ shared_ptr<Jeu> lireJeu(istream& fichier, Liste<Jeu>& listeJeux)
 		<< "\033[0m" << endl;
 	// std::cout << jeu.titre << endl;  //TODO: Enlever cet affichage temporaire servant à voir que le code fourni lit bien les jeux.
 	// On n'a pas demandé de faire une réallocation dynamique pour les designers.
-	ptrJeu->concepteurs.initelements(ptrJeu->concepteurs.getnElements());
+	ptrJeu->concepteurs.initElements(ptrJeu->concepteurs.getNElements());
 	for (shared_ptr<Concepteur>& c : ptrJeu->concepteurs.spanListe()) {
 		c = lireConcepteur(fichier, listeJeux);
 		c->jeuxConcus.ajouterUnElement(ptrJeu);
@@ -148,15 +148,42 @@ void afficherConcepteur(const Concepteur& d)
 void afficherJeu(const Jeu& j)
 {
 	std::cout << "Titre : " << "\033[94m" << j.titre << "\033[0m" << endl;
-	std::cout << "Parution : " << "\033[94m" << j.anneeSortie << "\033[0m"
-		<< endl;
-	//std::cout << "Développeur :  " << "\033[94m" << j.developpeur << "\033[0m"
-	//	<< endl;
+	std::cout << "Parution : " << "\033[94m" << j.anneeSortie << "\033[0m"<< endl;
 	std::cout << "Concepteurs du jeu :" << "\033[94m" << endl;
 	for (const shared_ptr<Concepteur> c : j.concepteurs.spanListe())
 		afficherConcepteur(*c);
 	std::cout << "\033[0m";
 }
+
+ostream& operator<<(ostream& os, const Concepteur& concepteur) {
+	os << concepteur.nom << " (né en " << concepteur.anneeNaissance << ")";
+	return os;
+}
+ostream& operator<<(ostream& os, const Jeu& jeu) {
+	os << "Titre: " << jeu.titre << "\n"
+		<< "Annee de sortie: " << jeu.anneeSortie << "\n"
+		<< "Concepteurs:\n";
+	for (const auto& concepteur : jeu.concepteurs.spanListe()) {
+		if (concepteur) {
+			os << "  - " << *concepteur << "\n";  // Utilise la surcharge pour Concepteur
+		}
+	}
+	return os;
+}
+
+template <typename T>
+ostream& operator<<(ostream& os, const Liste<T>& liste)
+{
+	static const string ligneSeparation = "\n\033[95m"
+		"══════════════════════════════════════════════════════════════════════════"
+		"\033[0m\n";
+	for (shared_ptr<T> j : liste.spanListe())
+	{
+		os << *j << endl<<ligneSeparation<<endl;  // Affiche chaque élément en supposant que T surcharge aussi <<
+	}
+	return os;
+}
+
 
 //TODO: Fonction pour afficher tous les jeux de ListeJeux, séparés par un ligne.
 // Servez-vous de la fonction d'affichage d'un jeu crée ci-dessus. Votre ligne
@@ -228,6 +255,50 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 		cout << "Les pointeurs vers le concepteur sont identiques." << endl;
 	}
 	
+	cout << ligneSeparation << endl << "Test #6" << endl;
 
-	
+	cout << lj;
+	/*
+	std::ofstream fichierSortie("sortie.txt");
+	if (fichierSortie.is_open()) {
+		fichierSortie << lj;
+		fichierSortie.close();
+		std::cout << "Liste de jeux écrite dans 'sortie.txt'.\n";
+	}
+	else {
+		std::cerr << "Erreur lors de l'ouverture du fichier.\n";
+	}
+	*/
+	cout << ligneSeparation << endl << "Test #7" << endl;
+
+	Jeu copieJeu = *lj[2];
+
+	// Remplacer le deuxième concepteur dans copieJeu par un autre venant du jeu à l'indice 0
+	if (copieJeu.concepteurs.getNElements() > 1 && lj[0]->concepteurs.getNElements() > 1) {
+		copieJeu.concepteurs[1] = lj[0]->concepteurs[1];  // Remplacement du 2e concepteur par celui du jeu à l'indice 0
+	}
+
+	// Afficher le jeu à l'indice 2
+	std::cout << "Jeu original à l'indice 2 :\n";
+	std::cout << *lj[2] << "\n";
+
+	// Afficher la copie modifiée
+	std::cout << "Copie du jeu avec modification :\n";
+	std::cout << copieJeu << "\n";
+
+	// Vérification que l'adresse du premier concepteur est la même
+	if (lj[2]->concepteurs[0] == copieJeu.concepteurs[0]) {
+		std::cout << "L'adresse du premier concepteur est la même.\n";
+	}
+	else {
+		std::cout << "L'adresse du premier concepteur est différente.\n";
+	}
+
+	// Vérification que les listes de concepteurs sont bien différentes
+	if (lj[2]->concepteurs[1] != copieJeu.concepteurs[1]) {
+		std::cout << "Les listes de concepteurs sont différentes.\n";
+	}
+	else {
+		std::cout << "Les listes de concepteurs sont identiques (ce qui ne devrait pas être le cas).\n";
+	}
 }
