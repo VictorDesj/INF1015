@@ -69,9 +69,7 @@ shared_ptr<Concepteur> trouverConcepteur(const Liste<Jeu>& listeJeux, string nom
 shared_ptr<Concepteur> lireConcepteur(istream& fichier, Liste<Jeu>& listeJeux)
 {
 	Concepteur concepteur = {}; // On initialise une structure vide de type Concepteur.
-	cout << "1";
 	concepteur.nom = lireString(fichier);
-	cout << "2";
 	concepteur.anneeNaissance = int(lireUintTailleVariable(fichier));
 	concepteur.pays = lireString(fichier);
 	// Rendu ici, les champs précédents de la structure concepteur sont remplis
@@ -139,34 +137,25 @@ shared_ptr<Jeu> lireJeu(istream& fichier, Liste<Jeu>& listeJeux)
 {
 	Jeu jeu = {}; // On initialise une structure vide de type Jeu
 	jeu.titre = lireString(fichier);
-	if (jeu.titre.empty()) {
-		std::cerr << "Error: Titre is empty." << std::endl;
-		return nullptr;
-	}
 	jeu.anneeSortie = int(lireUintTailleVariable(fichier));
-	size_t nElements = lireUintTailleVariable(fichier);
-	if (jeu.anneeSortie == 0) {
-		std::cerr << "Error: Invalid year read." << std::endl;
-		return nullptr;  // Return null if the year is invalid
-	}
-	shared_ptr<Jeu> ptrJeu = make_shared<Jeu>(jeu);
-	std::cout << "Read Jeu: " << jeu.titre << ", Year: " << jeu.anneeSortie << ", Concepteurs: " << nElements << std::endl;
+	jeu.developpeur = lireString(fichier);
+	
+	
+	
 
 	// Rendu ici, les champs précédents de la structure jeu sont remplis avec la
 	// bonne information.
+
+	shared_ptr<Jeu> ptrJeu = make_shared<Jeu>(jeu);
 
 	std::cout << "\033[96m" << "Allocation en mémoire du jeu " << jeu.titre
 		<< "\033[0m" << endl;
 	// std::cout << jeu.titre << endl;  //TODO: Enlever cet affichage temporaire servant à voir que le code fourni lit bien les jeux.
 	// On n'a pas demandé de faire une réallocation dynamique pour les designers.
-	for (size_t i = 0; i < nElements; ++i) {
-		auto concepteurPtr = lireConcepteur(fichier, listeJeux);
-		if (concepteurPtr) {
-			jeu.concepteurs.ajouterUnElement(concepteurPtr);
-		}
-		else {
-			std::cerr << "Error reading concepteur." << std::endl;
-		}
+	ptrJeu->concepteurs.initelements(ptrJeu->concepteurs.getnElements());
+	for (shared_ptr<Concepteur>& c : ptrJeu->concepteurs.spanListe()) {
+		c = lireConcepteur(fichier, listeJeux);
+		ptrJeu->concepteurs.ajouterUnElement(c);
 	}
 	cout << "Retour";
 	return ptrJeu; //TODO: Retourner le pointeur vers le nouveau jeu.

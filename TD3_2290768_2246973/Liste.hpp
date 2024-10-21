@@ -18,7 +18,16 @@ public:
 
 	void setnElements(size_t nElements)  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
 	{
+		while (nElements > capacite_) 
+		{
+			changerTaille(capacite_ * 2);
+		}
 		nElements_ = nElements;
+
+	}
+	void initelements(size_t n) {     // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
+		nElements_ = n;
+		elements_ = std::make_shared<std::shared_ptr<T>[]>(nElements_);
 	}
 	void ajouterUnElement(const shared_ptr<T>& element)
 	{
@@ -26,7 +35,9 @@ public:
 		{
 			changerTaille(max(size_t(1), capacite_ * 2));
 		}
-		elements_[nElements_++] = element;
+		elements_[nElements_] =element;
+		nElements_++;
+		
 	}
 
 	void enleverElement(const std::shared_ptr<T>& element)
@@ -50,7 +61,7 @@ public:
 
 	void changerTaille(size_t nouvelleCapacite)
 	{
-		shared_ptr <shared_ptr <T>[]> nouveauxElements = make_unique<shared_ptr<T>[]>(nouvelleCapacite);
+		shared_ptr <shared_ptr <T>[]> nouveauxElements = make_shared<shared_ptr<T>[]>(nouvelleCapacite);
 		for (size_t i : range(nElements_))
 		{
 			nouveauxElements[i] = move(elements_[i]);
@@ -68,7 +79,7 @@ public:
 	 shared_ptr <shared_ptr <T>[]> getelements() const { return elements_; }  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
 		
 private:
-	 shared_ptr <shared_ptr <T>[]> elements_;
+	shared_ptr <shared_ptr <T>[]> elements_;
 	size_t nElements_ = 0;
 	size_t capacite_ = 1;
 
