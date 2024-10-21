@@ -11,12 +11,13 @@ Developpeur::Developpeur(const string& nom)
 {
 	paireNomJeux_ = { nom, Liste<Jeu>{} };
 }
-
+/*
 Developpeur::~Developpeur()
 {
 	delete[] paireNomJeux_.second.elements_.get(); // Les objets jeux n'appartiennent pas à la liste, donc on ne fait pas de detruireListeJeux (ou on pourrait avoir une version de detruireListeJeux qui ne détruit pas les jeux).
 }
-
+*/
+/*
 void Developpeur::ajouterJeux(Liste<Jeu>& listeJeux)
 {
 	changerTailleListeJeux(paireNomJeux_.second, compterJeuxDeveloppes(listeJeux));
@@ -26,18 +27,20 @@ void Developpeur::ajouterJeux(Liste<Jeu>& listeJeux)
 			ajouterJeu(paireNomJeux_.second, j);
 	}
 }
+*/
 
 void Developpeur::afficher() const
 {
 	cout << "\n" << getNom() << " a développé les jeux suivants :" << endl;
-	if (paireNomJeux_.second.nElements_ > 0) {
-		for (shared_ptr<Jeu>& j : spanListeJeux(paireNomJeux_.second))
+	if (paireNomJeux_.second.getnElements() > 0) {
+		for (shared_ptr<Jeu>& j : paireNomJeux_.second.spanListe())
 			cout << "\t\033[33m" << j->titre << "\033[0m" << endl;
 	}
 	else
 		cout << "\t\033[31m" << "Aucun jeu trouvé, réessayez" << "\033[0m" << endl;
 }
 
+/*
 unsigned int Developpeur::compterJeuxDeveloppes(Liste<Jeu>& listeJeux)
 {
 	unsigned int n = 0;
@@ -47,7 +50,7 @@ unsigned int Developpeur::compterJeuxDeveloppes(Liste<Jeu>& listeJeux)
 	}
 	return n;
 }
-
+*/
 void ajouterJeu(Liste<Jeu>& liste, std::shared_ptr<Jeu> jeu);
 void changerTailleListeJeux(Liste<Jeu>& liste, size_t nouvelleCapacite);
 gsl::span<std::shared_ptr<Jeu>> spanListeJeux(const Liste<Jeu>& liste);

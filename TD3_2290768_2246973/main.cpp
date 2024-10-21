@@ -11,6 +11,7 @@
 #include "debogage_memoire.hpp"  //NOTE: Incompatible avec le "placement new", ne pas utiliser cette entête si vous utilisez ce type de "new" dans les lignes qui suivent cette inclusion.
 #include "Liste.hpp"
 #include "Jeu.hpp"
+#include "Concepteur.hpp"
 
 using namespace std;
 using namespace iter;
@@ -45,16 +46,6 @@ string lireString(istream& fichier)
 	fichier.read((char*)&texte[0], streamsize(sizeof(texte[0])) * texte.length());
 	return texte;
 }
-/*
-gsl::span<shared_ptr<Jeu>> spanListeJeux(const Liste<Jeu>& liste)
-{
-	return gsl::span<shared_ptr<Jeu>>(liste.elements_.get(), liste.nElements_);
-}
-gsl::span<shared_ptr<Concepteur>> spanListeConcepteurs(const Liste<Concepteur>& liste)
-{
-	return  gsl::span<shared_ptr<Concepteur>>(liste.elements_.get(), liste.nElements_);
-}
-*/
 #pragma endregion
 
 //TODO: Fonction qui cherche un concepteur par son nom dans une ListeJeux.
@@ -78,7 +69,9 @@ shared_ptr<Concepteur> trouverConcepteur(const Liste<Jeu>& listeJeux, string nom
 shared_ptr<Concepteur> lireConcepteur(istream& fichier, Liste<Jeu>& listeJeux)
 {
 	Concepteur concepteur = {}; // On initialise une structure vide de type Concepteur.
+	cout << "1";
 	concepteur.nom = lireString(fichier);
+	cout << "2";
 	concepteur.anneeNaissance = int(lireUintTailleVariable(fichier));
 	concepteur.pays = lireString(fichier);
 	// Rendu ici, les champs précédents de la structure concepteur sont remplis
@@ -146,30 +139,40 @@ shared_ptr<Jeu> lireJeu(istream& fichier, Liste<Jeu>& listeJeux)
 {
 	Jeu jeu = {}; // On initialise une structure vide de type Jeu
 	jeu.titre = lireString(fichier);
+	if (jeu.titre.empty()) {
+		std::cerr << "Error: Titre is empty." << std::endl;
+		return nullptr;
+	}
 	jeu.anneeSortie = int(lireUintTailleVariable(fichier));
-	jeu.developpeur = lireString(fichier);
-	jeu.concepteurs.setnElements(lireUintTailleVariable(fichier)) ;
+	size_t nElements = lireUintTailleVariable(fichier);
+	if (jeu.anneeSortie == 0) {
+		std::cerr << "Error: Invalid year read." << std::endl;
+		return nullptr;  // Return null if the year is invalid
+	}
+	shared_ptr<Jeu> ptrJeu = make_shared<Jeu>(jeu);
+	std::cout << "Read Jeu: " << jeu.titre << ", Year: " << jeu.anneeSortie << ", Concepteurs: " << nElements << std::endl;
+
 	// Rendu ici, les champs précédents de la structure jeu sont remplis avec la
 	// bonne information.
 
-	//TODO: Ajouter en mémoire le jeu lu. Il faut revoyer le pointeur créé.
-	// Attention, il faut aussi créer un tableau dynamique pour les concepteurs
-	// que contient un jeu. Servez-vous de votre fonction d'ajout de jeu car la
-	// liste de jeux participé est une ListeJeu. Afficher un message lorsque
-	// l'allocation du jeu est réussie.
-	shared_ptr<Jeu> ptrJeu = make_shared<Jeu>(jeu);  // Ou allouer directement au début plutôt qu'en faire une copie ici.
 	std::cout << "\033[96m" << "Allocation en mémoire du jeu " << jeu.titre
 		<< "\033[0m" << endl;
 	// std::cout << jeu.titre << endl;  //TODO: Enlever cet affichage temporaire servant à voir que le code fourni lit bien les jeux.
-	ptrJeu->concepteurs.setelements(ptrJeu->concepteurs.getelements()) ;  // On n'a pas demandé de faire une réallocation dynamique pour les designers.
-	for (size_t i = 0; i < ptrJeu->concepteurs.getnElements(); ++i) {
-		ptrJeu->concepteurs.elements_[i] = lireConcepteur(fichier, listeJeux);
-		ptrJeu->concepteurs.elements_[i]->jeuxConcus.ajouterUnElement(ptrJeu);
+	// On n'a pas demandé de faire une réallocation dynamique pour les designers.
+	for (size_t i = 0; i < nElements; ++i) {
+		auto concepteurPtr = lireConcepteur(fichier, listeJeux);
+		if (concepteurPtr) {
+			jeu.concepteurs.ajouterUnElement(concepteurPtr);
+		}
+		else {
+			std::cerr << "Error reading concepteur." << std::endl;
+		}
 	}
+	cout << "Retour";
 	return ptrJeu; //TODO: Retourner le pointeur vers le nouveau jeu.
 }
 
-Liste<Jeu> creerListeJeux(const string& nomFichier)
+Liste<Jeu> creerListeJeux(const string & nomFichier)
 {
 	ifstream fichier(nomFichier, ios::binary);
 	fichier.exceptions(ios::failbit);
@@ -177,7 +180,8 @@ Liste<Jeu> creerListeJeux(const string& nomFichier)
 	Liste<Jeu> listeJeux = {};
 	for ([[maybe_unused]] size_t n : iter::range(nElements))
 	{
-		ajouterJeu(listeJeux, lireJeu(fichier, listeJeux)); //TODO: Ajouter le jeu à la ListeJeux.
+		listeJeux.ajouterUnElement(lireJeu(fichier, listeJeux)); //TODO: Ajouter le jeu à la ListeJeux.
+		cout << n;
 	}
 
 	return listeJeux; //TODO: Renvoyer la ListeJeux.
@@ -185,18 +189,9 @@ Liste<Jeu> creerListeJeux(const string& nomFichier)
 
 //TODO: Fonction pour détruire un concepteur (libération de mémoire allouée).
 // Lorsqu'on détruit un concepteur, on affiche son nom pour fins de débogage.
-void detruireConcepteur(shared_ptr<Concepteur> concepteur)
-{
-	std::cout << "\033[91m" << "Destruction du concepteur " << concepteur->nom << "\033[0m"
-		<< endl;
-	concepteur->jeuxConcus.elements_.reset();
-}
+
 
 //TODO: Fonction qui détermine si un concepteur participe encore à un jeu.
-bool encorePresentDansUnJeu(const shared_ptr<Concepteur> concepteur)
-{
-	return concepteur->jeuxConcus.nElements_ != 0;
-}
 
 //TODO: Fonction pour détruire un jeu (libération de mémoire allouée).
 // Attention, ici il faut relâcher toute les cases mémoires occupées par un jeu.
@@ -205,25 +200,8 @@ bool encorePresentDansUnJeu(const shared_ptr<Concepteur> concepteur)
 // qu'un concepteur a participé (jeuxConcus). Si le concepteur n'a plus de
 // jeux présents dans sa liste de jeux participés, il faut le supprimer.  Pour
 // fins de débogage, affichez le nom du jeu lors de sa destruction.
-void detruireJeu(shared_ptr<Jeu> jeu)
-{
-	for (shared_ptr<Concepteur> c : spanListeConcepteurs(jeu->concepteurs)) {
-		enleverJeu(c->jeuxConcus, jeu);
-		if (!encorePresentDansUnJeu(c))
-			detruireConcepteur(c);
-	}
-	std::cout << "\033[31m" << "Destruction du jeu " << jeu->titre << "\033[0m"
-		<< endl;
-	jeu->concepteurs.elements_.reset();
-}
 
 //TODO: Fonction pour détruire une ListeJeux et tous ses jeux.
-void detruireListeJeux(Liste<Jeu>& liste)
-{
-	for (shared_ptr<Jeu> j : spanListeJeux(liste))
-		detruireJeu(j);
-
-}
 
 void afficherConcepteur(const Concepteur& d)
 {
@@ -233,15 +211,17 @@ void afficherConcepteur(const Concepteur& d)
 
 //TODO: Fonction pour afficher les infos d'un jeu ainsi que ses concepteurs.
 // Servez-vous de la fonction afficherConcepteur ci-dessus.
+
+
 void afficherJeu(const Jeu& j)
 {
 	std::cout << "Titre : " << "\033[94m" << j.titre << "\033[0m" << endl;
 	std::cout << "Parution : " << "\033[94m" << j.anneeSortie << "\033[0m"
 		<< endl;
-	std::cout << "Développeur :  " << "\033[94m" << j.developpeur << "\033[0m"
-		<< endl;
+	//std::cout << "Développeur :  " << "\033[94m" << j.developpeur << "\033[0m"
+	//	<< endl;
 	std::cout << "Concepteurs du jeu :" << "\033[94m" << endl;
-	for (const shared_ptr<Concepteur> c : spanListeConcepteurs(j.concepteurs))
+	for (const shared_ptr<Concepteur> c : j.concepteurs.spanListe())
 		afficherConcepteur(*c);
 	std::cout << "\033[0m";
 }
@@ -255,7 +235,7 @@ void afficherListeJeux(const Liste<Jeu>& listeJeux)
 		"══════════════════════════════════════════════════════════════════════════"
 		"\033[0m\n";
 	std::cout << ligneSeparation << endl;
-	for (const shared_ptr<Jeu> j : spanListeJeux(listeJeux))
+	for (const shared_ptr<Jeu> j : listeJeux.spanListe())
 	{
 		afficherJeu(*j);
 		std::cout << ligneSeparation << endl;
@@ -281,7 +261,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 	std::cout << ligneSeparation << endl;
 	std::cout << "Premier jeu de la liste :" << endl;
 	//TODO: Afficher le premier jeu de la liste (en utilisant la fonction).  Devrait être Chrono Trigger.
-	afficherJeu(*lj.elements_[0]);
+	//afficherJeu(lj.getelements()[0]);
 	std::cout << ligneSeparation << endl;
 
 	//TODO: Appel à votre fonction d'affichage de votre liste de jeux.
@@ -289,34 +269,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 
 	//TODO: Faire les appels à toutes vos fonctions/méthodes pour voir qu'elles fonctionnent et avoir 0% de lignes non exécutées dans le programme (aucune ligne rouge dans la couverture de code; c'est normal que les lignes de "new" et "delete" soient jaunes).  Vous avez aussi le droit d'effacer les lignes du programmes qui ne sont pas exécutée, si finalement vous pensez qu'elle ne sont pas utiles.
 
-	ListeDeveloppeurs ld;
-	// Création des développeurs externes à la liste des développeur
-	Developpeur* nintendo = new Developpeur("Nintendo");
-	Developpeur* square = new Developpeur("Square");
-	Developpeur* konami = new Developpeur("Konami");
-	Developpeur* bidon = new Developpeur("Bidon");
-	// On ajoute les jeux respectifs de ListeJeux développé par le développeur
-	nintendo->ajouterJeux(lj);
-	square->ajouterJeux(lj);
-	konami->ajouterJeux(lj);
-	// On ajoute les développeurs à la ListeDeveloppeur car ils sont externes
-	ld.ajouter(nintendo);
-	ld.ajouter(square);
-	ld.ajouter(konami);
-	ld.ajouter(bidon);
-	// On affiche la liste des développeurs, leurs jeux sont aussi affichés; Bidon ne devrait avoir aucun jeu.
-	ld.afficher();
-
-	std::cout << endl << "On retire " << bidon->getNom() << endl;
-	ld.retirer(bidon); // Retire sans détruire.
-	ld.afficher();
-	std::cout << "Il existe encore: " << bidon->getNom() << endl;
-
-	delete bidon;
-	delete konami;
-	delete square;
-	delete nintendo;
+	
 
 	//TODO: Détruire tout avant de terminer le programme.  Devrait afficher "Aucune fuite detectee." a la sortie du programme; il affichera "Fuite detectee:" avec la liste des blocs, s'il manque des delete.
-	detruireListeJeux(lj);
 }

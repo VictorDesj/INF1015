@@ -13,30 +13,22 @@ using namespace gsl;
 template <typename T>
 class Liste {
 public:
-	//std::size_t nElements, capacite;
-	//T** elements;
+
 	Liste() = default;
+
 	void setnElements(size_t nElements)  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
 	{
 		nElements_ = nElements;
 	}
-	void setelements(unique_ptr <shared_ptr <T>[]> elements) // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
-	{
-		elements_ = elements;
-	}
-	void setelements(shared_ptr <T>[] elements) // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
-	{
-		elements_ = elements;
-	}
-
-	void ajouterUnElement(const shared_ptr<T> element)
+	void ajouterUnElement(const shared_ptr<T>& element)
 	{
 		if (nElements_ == capacite_)
 		{
 			changerTaille(max(size_t(1), capacite_ * 2));
 		}
-		elements_[nElements_++] = move(element);
+		elements_[nElements_++] = element;
 	}
+
 	void enleverElement(const std::shared_ptr<T>& element)
 	{
 		for (size_t i : range(nElements_))
@@ -58,10 +50,10 @@ public:
 
 	void changerTaille(size_t nouvelleCapacite)
 	{
-		auto nouveauxElements = make_unique<shared_ptr<T>[]>(nouvelleCapacite);
+		shared_ptr <shared_ptr <T>[]> nouveauxElements = make_unique<shared_ptr<T>[]>(nouvelleCapacite);
 		for (size_t i : range(nElements_))
 		{
-			nouveauxElements[i] = elements_[i];
+			nouveauxElements[i] = move(elements_[i]);
 		}
 
 		elements_ = move(nouveauxElements);
@@ -72,14 +64,14 @@ public:
 	{
 		return  gsl::span<shared_ptr<T>>(elements_.get(), nElements_);
 	}
-	size_t getnElements() const { return nElements_ }  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
-	unique_ptr <shared_ptr <T>[]> getelements() const {
-		return elements_ // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
+	size_t getnElements() const { return nElements_; }  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
+	 shared_ptr <shared_ptr <T>[]> getelements() const { return elements_; }  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
+		
 private:
-	unique_ptr <shared_ptr <T>[]> elements_;
+	 shared_ptr <shared_ptr <T>[]> elements_;
 	size_t nElements_ = 0;
-	size_t capacite_ = 0;
+	size_t capacite_ = 1;
 
 
-	}
+	
 };
