@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <string>
-#include "Liste.hpp" // Include the header for your Liste class
+#include "Liste.hpp" 
 
 
 struct Jeu;
@@ -10,5 +10,6 @@ struct Concepteur
     std::string nom;
     int anneeNaissance;
     std::string pays;
-    Liste<Jeu> jeuxConcus; // Use the forward-declared type
+    Liste<Jeu> jeuxConcus; 
+    Concepteur() : nom(""), anneeNaissance(0), pays(""), jeuxConcus() {}
 };

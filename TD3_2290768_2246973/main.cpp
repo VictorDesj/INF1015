@@ -226,7 +226,10 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 
 	//afficherListeJeux(lj);
 	cout << ligneSeparation << endl << "Test #3"<<endl;
+	lj.afficherNElements();
+	cout << endl;
 	lj.afficherCapacite();
+	
 
 	cout << ligneSeparation << endl<<"Test #4"<<endl;
 	
@@ -256,9 +259,10 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 	}
 	
 	cout << ligneSeparation << endl << "Test #6" << endl;
-
-	cout << lj;
 	/*
+	cout << lj;
+	*/
+	
 	std::ofstream fichierSortie("sortie.txt");
 	if (fichierSortie.is_open()) {
 		fichierSortie << lj;
@@ -268,15 +272,15 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 	else {
 		std::cerr << "Erreur lors de l'ouverture du fichier.\n";
 	}
-	*/
+	
 	cout << ligneSeparation << endl << "Test #7" << endl;
 
 	Jeu copieJeu = *lj[2];
 
+	
 	// Remplacer le deuxième concepteur dans copieJeu par un autre venant du jeu à l'indice 0
-	if (copieJeu.concepteurs.getNElements() > 1 && lj[0]->concepteurs.getNElements() > 1) {
-		copieJeu.concepteurs[1] = lj[0]->concepteurs[1];  // Remplacement du 2e concepteur par celui du jeu à l'indice 0
-	}
+	copieJeu.concepteurs[1] = lj[0]->concepteurs[1];  // Remplacement du 2e concepteur par celui du jeu à l'indice 0
+	
 
 	// Afficher le jeu à l'indice 2
 	std::cout << "Jeu original à l'indice 2 :\n";

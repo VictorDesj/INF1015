@@ -79,7 +79,6 @@ public:
 		elements_ = move(nouveauxElements);
 		capacite_ = nouvelleCapacite;
 	}
-	
 
 	gsl::span<shared_ptr<T>> spanListe() const
 	{
@@ -87,6 +86,7 @@ public:
 	}
 
 	void afficherCapacite() { cout << capacite_; }
+	void afficherNElements() { cout << nElements_; }
 
 	
 	shared_ptr<T> operator[](size_t position)
@@ -98,6 +98,7 @@ public:
 		return elements_[position];
 	}
 	
+
 
 	size_t getNElements() const { return nElements_; }  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
 	shared_ptr <shared_ptr <T>[]> getElements() const { return elements_; }  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
