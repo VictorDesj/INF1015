@@ -15,5 +15,4 @@ struct Jeu
     shared_ptr<Concepteur> chercherConcepteur(const function<bool(const shared_ptr<Concepteur>&)>& critere) {
         return concepteurs.chercherElement(critere);
     }
-
 };

@@ -85,7 +85,7 @@ shared_ptr<Concepteur> lireConcepteur(istream& fichier, Liste<Jeu>& listeJeux)
 	if (concepteurExistant != nullptr)
 		return concepteurExistant;
 
-	//std::cout << concepteur.nom << endl;  //TODO: Enlever cet affichage temporaire servant à voir que le code fourni lit bien les jeux.
+
 	std::cout << "\033[92m" << "Allocation en mémoire du concepteur " << concepteur.nom
 		<< "\033[0m" << endl;
 	return make_shared<Concepteur>(concepteur);//TODO: Retourner le pointeur vers le concepteur crée.
@@ -98,7 +98,7 @@ shared_ptr<Concepteur> lireConcepteur(istream& fichier, Liste<Jeu>& listeJeux)
 
 shared_ptr<Jeu> lireJeu(istream& fichier, Liste<Jeu>& listeJeux)
 {
-	Jeu jeu; // On initialise une structure vide de type Jeu
+	Jeu jeu; 
 	jeu.titre = lireString(fichier);
 	jeu.anneeSortie = int(lireUintTailleVariable(fichier));
 	jeu.developpeur = lireString(fichier);
@@ -115,7 +115,6 @@ shared_ptr<Jeu> lireJeu(istream& fichier, Liste<Jeu>& listeJeux)
 	ptrJeu->concepteurs.initElements(ptrJeu->concepteurs.getNElements());
 	for (shared_ptr<Concepteur>& c : ptrJeu->concepteurs.spanListe()) {
 		c = lireConcepteur(fichier, listeJeux);
-		c->jeuxConcus.ajouterUnElement(ptrJeu);
 	}
 	return ptrJeu; //TODO: Retourner le pointeur vers le nouveau jeu.
 }
@@ -165,7 +164,7 @@ ostream& operator<<(ostream& os, const Jeu& jeu) {
 		<< "Concepteurs:\n";
 	for (const auto& concepteur : jeu.concepteurs.spanListe()) {
 		if (concepteur) {
-			os << "  - " << *concepteur << "\n";  // Utilise la surcharge pour Concepteur
+			os << "  - " << *concepteur << "\n";  
 		}
 	}
 	return os;
@@ -179,7 +178,7 @@ ostream& operator<<(ostream& os, const Liste<T>& liste)
 		"\033[0m\n";
 	for (shared_ptr<T> j : liste.spanListe())
 	{
-		os << *j << endl<<ligneSeparation<<endl;  // Affiche chaque élément en supposant que T surcharge aussi <<
+		os << *j << endl<<ligneSeparation<<endl;  
 	}
 	return os;
 }
@@ -188,6 +187,7 @@ ostream& operator<<(ostream& os, const Liste<T>& liste)
 //TODO: Fonction pour afficher tous les jeux de ListeJeux, séparés par un ligne.
 // Servez-vous de la fonction d'affichage d'un jeu crée ci-dessus. Votre ligne
 // de séparation doit être différent de celle utilisée dans le main.
+
 void afficherListeJeux(const Liste<Jeu>& listeJeux)
 {
 	static const string ligneSeparation = "\n\033[95m"
@@ -221,10 +221,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 	std::cout << "Premier jeu de la liste :" << endl;
 	//TODO: Afficher le premier jeu de la liste (en utilisant la fonction).  Devrait être Chrono Trigger.
 	afficherJeu(*lj[0]);
-	std::cout << ligneSeparation << endl;
 
 
-	//afficherListeJeux(lj);
 	cout << ligneSeparation << endl << "Test #3"<<endl;
 	lj.afficherNElements();
 	cout << endl;
@@ -259,9 +257,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 	}
 	
 	cout << ligneSeparation << endl << "Test #6" << endl;
-	/*
+	
 	cout << lj;
-	*/
 	
 	std::ofstream fichierSortie("sortie.txt");
 	if (fichierSortie.is_open()) {
@@ -277,18 +274,16 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 
 	Jeu copieJeu =*lj[2];
 
-
+	 
 	copieJeu.concepteurs[1] = lj[0]->concepteurs[1];
 
-	// Afficher le jeu à l'indice 2
 	std::cout << "Jeu original à l'indice 2 :\n";
 	std::cout << *lj[2] << "\n";
 
-	// Afficher la copie modifiée
 	std::cout << "Copie du jeu avec modification :\n";
 	std::cout << copieJeu << "\n";
 
-	// Vérification que l'adresse du premier concepteur est la même
+
 	if (lj[2]->concepteurs[0] == copieJeu.concepteurs[0]) {
 		std::cout << "L'adresse du premier concepteur est la même.\n";
 	}
@@ -296,7 +291,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 		std::cout << "L'adresse du premier concepteur est différente.\n";
 	}
 
-	// Vérification que les listes de concepteurs sont bien différentes
+
 	if (lj[2]->concepteurs[1] != copieJeu.concepteurs[1]) {
 		std::cout << "Les listes de concepteurs sont différentes.\n";
 	}

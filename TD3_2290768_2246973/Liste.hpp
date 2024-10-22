@@ -21,11 +21,11 @@ public:
 	{
 		nElements_ = autre.nElements_;
 		capacite_ = autre.capacite_;
-		elements_ = make_shared<shared_ptr<T>[]>(capacite_);
+		elements_ = make_unique<shared_ptr<T>[]>(capacite_);
 		*this = autre;
 	}
 
-	void setNElements(size_t nElements)  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
+	void setNElements(size_t nElements) 
 	{
 		while (nElements > capacite_) 
 		{
@@ -35,10 +35,10 @@ public:
 
 	}
 
-	void initElements(size_t n)  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
+	void initElements(size_t n)  
 	{     
 		nElements_ = n;
-		elements_ = make_shared<shared_ptr<T>[]>(nElements_);
+		elements_ = make_unique<shared_ptr<T>[]>(nElements_);
 	}
 
 	void ajouterUnElement(const shared_ptr<T>& element)
@@ -78,7 +78,7 @@ public:
 	void changerTaille(size_t nouvelleCapacite)
 	{
 		
-		shared_ptr <shared_ptr <T>[]> nouveauxElements = make_shared<shared_ptr<T>[]>(nouvelleCapacite);
+		unique_ptr <shared_ptr <T>[]> nouveauxElements = make_unique<shared_ptr<T>[]>(nouvelleCapacite);
 		for (size_t i : range(nElements_))
 		{
 			nouveauxElements[i] = move(elements_[i]);
@@ -93,8 +93,8 @@ public:
 		return  gsl::span<shared_ptr<T>>(elements_.get(), nElements_);
 	}
 
-	void afficherCapacite() { cout << capacite_; }
-	void afficherNElements() { cout << nElements_; }
+	void afficherCapacite() { cout << "Capacité: "<<capacite_; }
+	void afficherNElements() { cout << "nÉléments: " << nElements_; }
 
 	
 	shared_ptr<T>& operator[](size_t position)
@@ -119,13 +119,13 @@ public:
 	}
 
 
-	size_t getNElements() const { return nElements_; }  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
-	shared_ptr <shared_ptr <T>[]> getElements() const { return elements_; }  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
+	size_t getNElements() const { return nElements_; }  
+	unique_ptr <shared_ptr <T>[]> getElements() const { return elements_; } 
 		
 
 
 private:
-	shared_ptr <shared_ptr <T>[]> elements_;
+	unique_ptr <shared_ptr <T>[]> elements_;
 	size_t nElements_ = 0;
 	size_t capacite_ = 0;
 };
