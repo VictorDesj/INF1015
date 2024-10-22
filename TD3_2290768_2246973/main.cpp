@@ -98,7 +98,7 @@ shared_ptr<Concepteur> lireConcepteur(istream& fichier, Liste<Jeu>& listeJeux)
 
 shared_ptr<Jeu> lireJeu(istream& fichier, Liste<Jeu>& listeJeux)
 {
-	Jeu jeu = {}; // On initialise une structure vide de type Jeu
+	Jeu jeu; // On initialise une structure vide de type Jeu
 	jeu.titre = lireString(fichier);
 	jeu.anneeSortie = int(lireUintTailleVariable(fichier));
 	jeu.developpeur = lireString(fichier);
@@ -275,12 +275,10 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 	
 	cout << ligneSeparation << endl << "Test #7" << endl;
 
-	Jeu copieJeu = *lj[2];
+	Jeu copieJeu =*lj[2];
 
-	
-	// Remplacer le deuxième concepteur dans copieJeu par un autre venant du jeu à l'indice 0
-	copieJeu.concepteurs[1] = lj[0]->concepteurs[1];  // Remplacement du 2e concepteur par celui du jeu à l'indice 0
-	
+
+	copieJeu.concepteurs[1] = lj[0]->concepteurs[1];
 
 	// Afficher le jeu à l'indice 2
 	std::cout << "Jeu original à l'indice 2 :\n";

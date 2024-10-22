@@ -10,6 +10,5 @@ struct Concepteur
     std::string nom;
     int anneeNaissance;
     std::string pays;
-    Liste<Jeu> jeuxConcus; 
-    Concepteur() : nom(""), anneeNaissance(0), pays(""), jeuxConcus() {}
+    Liste<Jeu> jeuxConcus;
 };

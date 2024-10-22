@@ -17,6 +17,14 @@ public:
 
 	Liste() = default;
 
+	Liste(const Liste<T>& autre)
+	{
+		nElements_ = autre.nElements_;
+		capacite_ = autre.capacite_;
+		elements_ = make_shared<shared_ptr<T>[]>(capacite_);
+		*this = autre;
+	}
+
 	void setNElements(size_t nElements)  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
 	{
 		while (nElements > capacite_) 
@@ -89,25 +97,35 @@ public:
 	void afficherNElements() { cout << nElements_; }
 
 	
-	shared_ptr<T> operator[](size_t position)
+	shared_ptr<T>& operator[](size_t position)
 	{
 		return elements_[position];
 	}
-	shared_ptr<const T> operator[](size_t position)const
+	shared_ptr<const T>& operator[](size_t position)const
 	{
 		return elements_[position];
 	}
 	
+	Liste<T>& operator=(const Liste<T>& autre) 
+	{
+		nElements_ = autre.nElements_;
+		capacite_ = autre.capacite_;
+		for (size_t i : range(autre.nElements_))
+		{
+			elements_[i] = autre.elements_[i];
+			i++;
+		}
+		return *this;
+	}
 
 
 	size_t getNElements() const { return nElements_; }  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
 	shared_ptr <shared_ptr <T>[]> getElements() const { return elements_; }  // Le lower Camel Case est +/- respecté pour que le nom de la variable soit le bon
 		
+
+
 private:
 	shared_ptr <shared_ptr <T>[]> elements_;
 	size_t nElements_ = 0;
 	size_t capacite_ = 0;
-
-
-	
 };
