@@ -4,9 +4,8 @@
 #include <cassert>
 #include <vector>
 #include "bibliotheque_cours.hpp"
-#include "Personnage.hpp"
-#include "Heros.hpp"
-#include "Vilain.hpp"
+
+#include "VilainHeros.hpp"
 
 using namespace std;
 

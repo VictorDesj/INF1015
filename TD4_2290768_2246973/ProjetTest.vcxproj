@@ -179,7 +179,7 @@
     <ClInclude Include="C:\Users\Victoria\Downloads\Heros.hpp" />
     <ClInclude Include="C:\Users\Victoria\Downloads\Personnage.hpp" />
     <ClInclude Include="C:\Users\Victoria\Downloads\Vilain.hpp" />
-    <ClInclude Include="C:\Users\Victoria\Downloads\VIlainHeros.hpp" />
+    <ClInclude Include="C:\Users\Victoria\Downloads\VilainHeros.hpp" />
     <ClInclude Include="lectureBinaire.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
