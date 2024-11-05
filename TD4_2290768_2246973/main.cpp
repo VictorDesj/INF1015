@@ -4,7 +4,13 @@
 #include <cassert>
 #include "bibliotheque_cours.hpp"
 #include "VilainHeros.hpp"
+#include <vector>
+
 using namespace std;
+
+static const string trait =
+"═════════════════════════════════════════════════════════════════════════";
+
 
 ifstream ouvrirFichierBinaire(const string& nomFichier)
 {
@@ -21,26 +27,53 @@ void testsPourCouvertureLectureBinaire()
 	assert(lireUintTailleVariable(iss) == 0xFEDCBA98);
 }
 
+template <typename T>
+void afficher(const vector<shared_ptr<T>>& listePerso) {
+	for (const auto& personnagePtr : listePerso)
+	{
+		if (auto vilainHeros = dynamic_pointer_cast<VilainHeros>(personnagePtr)) {
+			vilainHeros->changerCouleur(35);
+			vilainHeros->afficher(cout);
+			vilainHeros->changerCouleur(0);
+		}
+		else if (auto hero = dynamic_pointer_cast<Heros>(personnagePtr)) {
+			hero->changerCouleur(34);
+			hero->afficher(cout);
+			hero->changerCouleur(0);
+		}
+		else if (auto vilain = dynamic_pointer_cast<Vilain>(personnagePtr)) {
+			vilain->changerCouleur(31);
+			vilain->afficher(cout);
+			vilain->changerCouleur(0);
+		}
+		else {
+			personnagePtr->afficher(cout);
+		}
+		cout << trait << endl;
+	}
+
+}
+
 int main()
 {
-	#pragma region "Bibliothèque du cours"
+#pragma region "Bibliothèque du cours"
 	// Permet sous Windows les "ANSI escape code" pour changer de couleur
 	// https://en.wikipedia.org/wiki/ANSI_escape_code ; les consoles Linux/Mac
 	// les supportent normalement par défaut.
 	bibliotheque_cours::activerCouleursAnsi();
-	#pragma endregion
-	
+#pragma endregion
+
 	testsPourCouvertureLectureBinaire();
-
-	// Trait de separation
-	static const string trait =
-		"═════════════════════════════════════════════════════════════════════════";
-
+	
 	// Ouverture des fichiers binaires
 	ifstream fichierHeros = ouvrirFichierBinaire("heros.bin");
 	ifstream fichierVilains = ouvrirFichierBinaire("vilains.bin");
 
 	//TODO: Votre code pour le main commence ici (mais vous pouvez aussi ajouter/modifier du code avant si nécessaire)
+
+	
+
+
 
 	cout << trait << endl << "Test 1" << endl;
 	Personnage perso1("Randi", "Secret of Mana");
@@ -63,8 +96,70 @@ int main()
 	cout << "\033[0m";
 
 	cout << trait << endl << "Test 4" << endl;
-	VilainHeros perso4(perso3, perso2);
+	VilainHeros perso4(perso3,perso2);
 	perso4.afficher(cout);
 
 	cout << "\033[0m";
+
+
+	vector <shared_ptr<Heros>> listeHeros = {};
+	vector <shared_ptr<Vilain>> listeVilains = {};
+	vector <shared_ptr<Personnage>> listePersonnages = {};
+
+
+	// pour les heros 
+	size_t nHeros = lireUintTailleVariable(fichierHeros);
+	for (size_t i = 0; i < nHeros; i++)
+	{
+		string nom = lireString(fichierHeros);
+		string jeu = lireString(fichierHeros);
+		string ennemi = lireString(fichierHeros);
+		vector <string> listeAllies = {};
+
+		size_t nAllies = lireUintTailleVariable(fichierHeros);
+		for (size_t j = 0; j < nAllies; j++)
+		{
+			listeAllies.push_back(lireString(fichierHeros));
+		}
+
+		Heros hero(nom, jeu, ennemi, listeAllies);
+		listeHeros.push_back(make_shared<Heros>(hero));
+	}
+
+	// pour les vilains 
+	size_t nVilains = lireUintTailleVariable(fichierVilains);
+	for (size_t i = 0; i < nVilains; i++)
+	{
+		string nom = lireString(fichierVilains);
+		string jeu = lireString(fichierVilains);
+		string objectif = lireString(fichierVilains);
+
+		Vilain vilain(nom, jeu, objectif);
+		listeVilains.push_back(make_shared<Vilain>(vilain));
+	}
+
+	cout << "\n***Affichage de la liste des heros***\n";
+	afficher(listeHeros);
+
+	cout << "\n***Affichage de la liste des vilains***\n";
+	afficher(listeVilains);
+
+	for (const shared_ptr<Heros>& hero : listeHeros)
+	{
+		listePersonnages.push_back(hero);	
+	}
+
+	for (const shared_ptr <Vilain>& vilain : listeVilains)
+	{
+		listePersonnages.push_back(vilain);
+	}
+
+	
+	
+	VilainHeros mechantGentil(*listeVilains[2], *listeHeros[6]);
+	listePersonnages.push_back(make_shared<VilainHeros>(mechantGentil));
+
+	cout << "\n***Affichage de la liste des personnages***\n";
+	afficher(listePersonnages);
+
 }

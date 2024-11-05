@@ -3,6 +3,7 @@
 #include "Vilain.hpp"
 #include "Heros.hpp"
 
+
 class VilainHeros : virtual public Vilain, virtual public Heros {
 public:
 	VilainHeros(const Vilain& vilain, const Heros& hero) :Personnage(vilain.getNom() + "-" + hero.getNom(), vilain.getTitreJeu() + "-" + hero.getTitreJeu()),
@@ -17,7 +18,7 @@ public:
 		for (string allie : Heros::getAllies()) {
 			out << allie << endl;
 		}
-		out << "Mission speciale : " << missionSpeciale_;
+		out << "Mission speciale : " << missionSpeciale_<<endl;
 		return out;
 	}
 	string getMissionSpeciale() {
