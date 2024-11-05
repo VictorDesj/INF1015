@@ -45,19 +45,19 @@
     <ClInclude Include="lectureBinaire.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="VilainHeros.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Affichable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\Victoria\Downloads\Vilain.hpp">
+    <ClInclude Include="Personnage.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\Victoria\Downloads\VilainHeros.hpp">
+    <ClInclude Include="Heros.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\Victoria\Downloads\Personnage.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\Victoria\Downloads\Heros.hpp">
+    <ClInclude Include="Vilain.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

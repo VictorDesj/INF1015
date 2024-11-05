@@ -176,11 +176,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Affichable.hpp" />
-    <ClInclude Include="C:\Users\Victoria\Downloads\Heros.hpp" />
-    <ClInclude Include="C:\Users\Victoria\Downloads\Personnage.hpp" />
-    <ClInclude Include="C:\Users\Victoria\Downloads\Vilain.hpp" />
-    <ClInclude Include="C:\Users\Victoria\Downloads\VilainHeros.hpp" />
+    <ClInclude Include="Heros.hpp" />
     <ClInclude Include="lectureBinaire.hpp" />
+    <ClInclude Include="Personnage.hpp" />
+    <ClInclude Include="Vilain.hpp" />
+    <ClInclude Include="VilainHeros.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

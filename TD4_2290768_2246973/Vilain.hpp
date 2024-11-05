@@ -2,15 +2,15 @@
 #include "Personnage.hpp"
 
 
-class Vilain :public Personnage {
+class Vilain :virtual public Personnage {
 public:
-	Vilain(const string& nom, const string& titreJeu,const string objectif):Personnage(nom,titreJeu),objectif_(objectif){}
-	ostream& afficher(ostream& out) {
+	Vilain(const string& nom, const string& titreJeu, const string objectif) :Personnage(nom, titreJeu), objectif_(objectif) {}
+	ostream& afficher(ostream& out) const override{
 		Personnage::afficher(out);
 		cout << "Objectif : " << objectif_ << endl;
 		return out;
 	}
-	string getObjectif() {
+	string getObjectif() const {
 		return objectif_;
 	}
 protected:

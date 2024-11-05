@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <iostream>
 #include <string>
 #include "Personnage.hpp"
@@ -6,14 +6,14 @@
 
 using namespace std;
 
-class Heros : public Personnage {
+class Heros : virtual public Personnage {
 public:
     Heros(const string& nom, const string& titreJeu, const string& ennemi, const vector<string>& allies)
         : Personnage(nom, titreJeu), ennemi_(ennemi), allies_(allies) {}
 
     ostream& afficher(ostream& out) const override {
         Personnage::afficher(out);
-        out << "Ennemi : " << ennemi_ << endl << "Alliés : ";
+        out << "Ennemi : " << ennemi_ << endl << "Alliï¿½s : ";
         for (const auto& allie : allies_) {
             out << allie << endl;
         }
@@ -37,6 +37,6 @@ protected:
     }
 
 private:
-	string ennemi_;
-	vector<string> allies_ = {};
+    string ennemi_;
+    vector<string> allies_ = {};
 };

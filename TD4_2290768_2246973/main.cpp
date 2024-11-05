@@ -2,11 +2,8 @@
 #include <fstream>
 #include <sstream>
 #include <cassert>
-#include <vector>
 #include "bibliotheque_cours.hpp"
-
 #include "VilainHeros.hpp"
-
 using namespace std;
 
 ifstream ouvrirFichierBinaire(const string& nomFichier)
@@ -45,18 +42,29 @@ int main()
 
 	//TODO: Votre code pour le main commence ici (mais vous pouvez aussi ajouter/modifier du code avant si nécessaire)
 
-
+	cout << trait << endl << "Test 1" << endl;
 	Personnage perso1("Randi", "Secret of Mana");
-	vector<string> alliesMaurice = { "mister","lf","loic" };
-	Heros perso2("Maurice", "Madden", "Mechant", alliesMaurice);
+	perso1.afficher(cout);
+	perso1.changerCouleur(91);
+	perso1.afficher(cout);
+	cout << "\033[0m";
+
+	cout << trait << endl << "Test 2" << endl;
+	vector<string> allies = { "Red","Blue","Green" };
+	Heros perso2("Larry Fitzgerald", "Madden", "Patriots", allies);
+	perso2.afficher(cout);
+
+
+	cout << trait << endl << "Test 3" << endl;
 	Vilain perso3("Herobrine", "Minecraft", "Eliminier Steve");
 	perso3.afficher(cout);
-
-	// Changer la couleur en rouge et afficher
 	perso3.changerCouleur(96);
 	perso3.afficher(cout);
+	cout << "\033[0m";
 
-
+	cout << trait << endl << "Test 4" << endl;
+	VilainHeros perso4(perso3, perso2);
+	perso4.afficher(cout);
 
 	cout << "\033[0m";
 }

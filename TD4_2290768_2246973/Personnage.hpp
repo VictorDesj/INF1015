@@ -25,9 +25,9 @@ public:
 	}
 
 protected:
-	virtual void setNom(const string& nom){
+	virtual void setNom(const string& nom) {
 		nom_ = nom;
-}
+	}
 	virtual void setTitreJeu(const string& titreJeu) {
 		titreJeu_ = titreJeu;
 	}
