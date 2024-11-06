@@ -14,9 +14,7 @@ public:
 		return objectif_;
 	}
 protected:
-	void setObjectif(string objectif) {
-		objectif_ = objectif;
-	}
+	
 
 private:
 	string objectif_;

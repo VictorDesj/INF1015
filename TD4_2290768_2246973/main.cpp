@@ -1,4 +1,13 @@
-﻿#include "lectureBinaire.hpp"
+﻿/*
+ TD4 nous utlisisons des notions de méthodes virtuelles, les objets polymorphes et l'héritage simple et multiple
+Autheurd :
+- Vincent Desjardins 2246973
+- Ange Lares Simo Topi kenme 2290768
+Date 06 Octobre 2024
+Crée le 28 Octobre 2024 */
+
+
+#include "lectureBinaire.hpp"
 #include <fstream>
 #include <sstream>
 #include <cassert>

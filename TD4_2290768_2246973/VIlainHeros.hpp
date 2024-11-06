@@ -21,13 +21,8 @@ public:
 		out << "Mission speciale : " << missionSpeciale_<<endl;
 		return out;
 	}
-	string getMissionSpeciale() {
-		return missionSpeciale_;
-	}
+	
 protected:
-	void setMissionSpeciale(const string& mission) {
-		missionSpeciale_ = mission;
-	}
 private:
 	string missionSpeciale_;
 };

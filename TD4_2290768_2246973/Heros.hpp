@@ -28,14 +28,7 @@ public:
     }
 
 protected:
-    void setEnnemi(const string& ennemi) {
-        ennemi_ = ennemi;
-    }
-
-    void setAllies(const vector<string>& allies) {
-        allies_ = allies;
-    }
-
+    
 private:
     string ennemi_;
     vector<string> allies_ = {};
